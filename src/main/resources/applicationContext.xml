@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    https://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx
+    https://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/aop
+    https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 引入拆分的配置文件 -->
+    <!--<import resource="classpath:applicationContext-dao.xml" />
+    <import resource="classpath:applicationContext-service.xml" />-->
+    <!--<import resource="classpath:applicationContext-*.xml" />-->
+
+
+    <!--开启注解的方式，将自定义的bean加入到spring容器-->
+    <context:component-scan base-package="com.soft" />
+
+    <bean id="propertySourcesPlaceholderConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" >
+        <property name="location" value="classpath:database.properties" />
+    </bean>
+
+    <bean id="hikariDataSource" class="com.zaxxer.hikari.HikariDataSource" >
+        <property name="driverClassName" value="${driverClassName}" />
+        <property name="jdbcUrl" value="${jdbcUrl}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+     </bean>
+
+    <!--<bean id="JndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" >
+        <property name="jndiName" value="java:comp/env/jdbc/smbms" />
+    </bean>-->
+
+
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean" >
+        <property name="dataSource" ref="hikariDataSource" />
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+
+    </bean>
+
+
+    <!--声明开启事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+        <property name="dataSource" ref="hikariDataSource" />
+    </bean>
+
+
+    <tx:annotation-driven />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</beans>
